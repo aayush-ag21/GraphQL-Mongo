@@ -4,14 +4,14 @@ const graphqlHttp = require('express-graphql');
 const {buildSchema} = require('graphql');
 
 const app = express();
-
+const events=[];
 app.use(bodyparser.json());
 
 app.get('/',(req,res,next) =>{
     res.send('Hello World');
 })
 
-//query schema subscription are root methods in Graphql query->Get, mutation-> Post,put, Subscription -> Socket, fragment ->block
+/*query schema subscription are root methods in Graphql query->Get, mutation-> Post,put, Subscription -> Socket, fragment ->block
 //schema and type are keywords
 //all types of queries and mutations are listed in types and then refered in schema
 //RootQuery and RootMutation are not keywords
@@ -24,13 +24,32 @@ app.get('/',(req,res,next) =>{
 //arguments can be added to any property, even events
 //graphiql true activates inbuilt debugger, else use postman with put request and query in body
 //args should be in double quotes from client side
+//_ for compatibility with mongodb
+//default types are String,Int,Float,Boolean and ID
+// we can add mode types based on these types which can be further nested
+//so that we do not have to pass all types in a nested type, we use the input propert -> standard-> <typePropertyName>Input
+//+ added to convert to float
+*/
 app.use('/v1/graphql',graphqlHttp({
     schema: buildSchema(`
+        type Event{
+            _id: ID!
+            title: String!
+            description: String!
+            price: Float!
+            date: String!
+        }
+        input EventInput{
+            title: String!
+            description: String!
+            price: Float!
+            date: String!
+        }
         type RootQuery{
-            events: [String!]!
+            events: [Event!]!
         }
         type RootMutation{
-            createEvent(name:String):String
+            createEvent(eventInput:EventInput):Event
         }
         schema {
             query: RootQuery
@@ -39,11 +58,18 @@ app.use('/v1/graphql',graphqlHttp({
     `),
     rootValue:{
         events:()=>{
-            return['My','First','GraphQL'];
+            return events;
         },
         createEvent:(args)=>{
-            const eventName = args.name;
-            return eventName;
+            const event = {
+                _id:Math.random().toString(),
+                title: args.eventInput.title,
+                description:args.eventInput.description,
+                price:+args.eventInput.price,
+                date: args.eventInput.date
+            }
+            events.push(event);
+            return event;
         }
     },
     graphiql:true
