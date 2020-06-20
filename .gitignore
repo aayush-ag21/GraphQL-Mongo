@@ -1,6 +1,8 @@
 nodemon.json
 #{
 #    "env":{
-#        "MONGO_URI":""
+#        "MONGO_USER":"",
+#        "MONGO_PASSWORD":"",
+#        "MONGO_DB":""
 #    }
 #}
