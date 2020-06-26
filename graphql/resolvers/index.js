@@ -4,8 +4,6 @@ const UserModel = require('../../models/user');
 
 
 const events = eventIds =>{
-    console.log('event entered');
-    console.log(eventIds);
     return EventModel.find({_id:{$in:eventIds}})
     .then(events=>{
         return events.map(event=>{
@@ -17,8 +15,7 @@ const events = eventIds =>{
 const user= userId =>{
     return UserModel.findById(userId)
     .then(user =>{
-        console.log('user entered');
-        return {...user._doc,createdEvents: events.bind(this,user._doc.createdEvents)};
+        return {...user._doc,password:'nai dunga',createdEvents: events.bind(this,user._doc.createdEvents)};
     })
     .catch(err =>{
         throw err;
