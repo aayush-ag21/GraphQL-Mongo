@@ -48,5 +48,3 @@ mongoose
 //so that we do not have to pass all types in a nested type, we use the input propert -> standard-> <typePropertyName>Input
 //+ added to convert to float
 */
-
-//MongoClient.c
